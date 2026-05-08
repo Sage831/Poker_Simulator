@@ -383,26 +383,7 @@ def run_interactive_game():
     community_cards.append(river_card)                                           #adds the river card to the community cards
 
     print_current_odds(my_cards, community_cards, time_limit=3.0)                #prints updated odds after the river
-
-
-def test_run(seed=89):
-    random.seed(seed)
-
-    my_cards = deal_my_cards()
-    community_cards = deal_community_cards(my_cards)
-
-    decision, win_probability, total_rollouts = monte_carlo_search_tree(
-        my_cards=my_cards,
-        community_cards=community_cards,
-        time_limit=3.0
-    )
-
-    print("My cards:", my_cards)
-    print("Community cards:", community_cards)
-    print("Estimated win probability:", round(win_probability, 4))
-    print("Total rollouts:", total_rollouts)
-    print("Decision:", decision)
-
+    
 
 if __name__ == "__main__":
     run_interactive_game()
