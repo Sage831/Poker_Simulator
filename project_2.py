@@ -12,13 +12,72 @@ def full_deck():
     for card in cards:                                                          #iterates through cards list
         for suit in suits:                                                      #iterates through suits list
             deck_of_cards.append(card + suit)                                   #appends suited cards to deck of cards list
-    return deck_of_cards                                                        #returns full deck of cards
+    random.shuffle(deck_of_cards)                                               #shuffles deck of cards
+    return deck_of_cards                                                        #returns shuffled deck of cards
+
+
+def normalize_card_input(card_input):
+
+    card_input = card_input.strip()                                             #removes leading and trailing whitespace from the user input
+    card_input = card_input.upper()                                             #converts the rank part of the card to uppercase
+
+    suit_replacements = {                                                       #creates a dictionary that maps easy suit letters to suit symbols
+        "S": "\u2660",                                                          #maps S to spades
+        "C": "\u2663",                                                          #maps C to clubs
+        "H": "\u2665",                                                          #maps H to hearts
+        "D": "\u2666"                                                           #maps D to diamonds
+    }
+
+    if len(card_input) < 2:                                                     #checks if the input is too short to be a valid card
+        return None                                                             #returns None for invalid input
+
+    rank = card_input[:-1]                                                      #stores every character except the last one as the card rank
+    suit = card_input[-1]                                                       #stores the last character as the card suit
+
+    if suit in suit_replacements:                                               #checks if the suit was entered as a letter
+        suit = suit_replacements[suit]                                          #replaces the suit letter with the matching suit symbol
+
+    valid_ranks = ['2','3','4','5','6','7','8','9','10','J','Q','K','A']         #creates a list of valid card ranks
+    valid_suits = ['\u2660','\u2663','\u2665','\u2666']                          #creates a list of valid card suits
+
+    if rank not in valid_ranks:                                                 #checks if the rank is invalid
+        return None                                                             #returns None for invalid input
+
+    if suit not in valid_suits:                                                 #checks if the suit is invalid
+        return None                                                             #returns None for invalid input
+
+    return rank + suit                                                          #returns the normalized card using the same format as the rest of the program
+
+
+def get_card_from_user(prompt):
+
+    card = None                                                                 #creates a variable to store the validated card
+
+    while card is None:                                                         #loops until the user enters a valid card
+        card_input = input(prompt)                                               #gets the raw card input from the user
+        card = normalize_card_input(card_input)                                  #normalizes and validates the card input
+
+        if card is None:                                                        #checks if the user entered an invalid card
+            print("Invalid card. Use format like AS, 10H, 7D, or QC.")           #prints an explanation of the expected card format
+
+    return card                                                                 #returns the valid normalized card
+
+
+def get_unique_card_from_user(prompt, used_cards):
+
+    card = get_card_from_user(prompt)                                           #gets a valid card from the user
+
+    while card in used_cards:                                                   #checks if the card was already entered
+        print("That card has already been used. Enter a different card.")        #prints a duplicate-card warning
+        card = get_card_from_user(prompt)                                       #asks the user for another valid card
+
+    used_cards.append(card)                                                     #adds the card to the used-cards list
+    return card                                                                 #returns the unique card
 
 
 def deal_my_cards():
 
     deck_of_cards = full_deck()                                                 #creates a deck of cards using full_deck()
-    random.shuffle(deck_of_cards)                                               #shuffles deck
     my_cards = [deck_of_cards.pop(), deck_of_cards.pop()]                       #pops two cards from deck for my hand
     return my_cards                                                             #returns my cards
 
@@ -26,19 +85,17 @@ def deal_my_cards():
 def deal_community_cards(my_cards):
 
     deck_of_cards = full_deck()                                                 #creates a deck of cards using full_deck()
-    random.shuffle(deck_of_cards)                                               #shuffles deck of cards
     
     for card in my_cards:                                                       #iterates through my cards
         deck_of_cards.remove(card)                                              #removes cards in my hand from the deck of cards
 
-    community_cards = [deck_of_cards.pop(), deck_of_cards.pop(),deck_of_cards.pop()]            #pops three cards from deck for community cards
-    return community_cards                                                                      #returns the community cards
+    community_cards = [deck_of_cards.pop(), deck_of_cards.pop(),deck_of_cards.pop()]                #pops three cards from deck for community cards
+    return community_cards                                                                          #returns the community cards
 
 
 def deal_opponents_cards(my_cards, community_cards):
     
     deck_of_cards = full_deck()                                                 #creates a deck of cards using full_deck()
-    random.shuffle(deck_of_cards)                                               #shuffles deck of cards
     
     for card in my_cards:                                                       #iterates through my cards
         deck_of_cards.remove(card)                                              #removes cards in my hand from the deck of cards
@@ -48,29 +105,6 @@ def deal_opponents_cards(my_cards, community_cards):
 
     opponents_cards = [deck_of_cards.pop(), deck_of_cards.pop()]                #pops two cards from deck for my hand
     return opponents_cards                                                      #returns oppenent's cards
-
-
-def deal_remaining_community_cards(my_cards, opponent_cards, community_cards):
-
-    deck_of_cards = full_deck()                                                 #creates a deck of cards using full_deck()
-    random.shuffle(deck_of_cards)                                               #shuffles deck of cards
-    
-    for card in my_cards:                                                       #iterates through my cards
-        deck_of_cards.remove(card)                                              #removes cards in my hand from the deck of cards
-
-    for card in community_cards:                                                #iterates through community cards
-        deck_of_cards.remove(card)                                              #removes community cards from the deck of cards
-
-    for card in opponent_cards:                                                 #iterates through opponent's cards
-        deck_of_cards.remove(card)                                              #removes opponent's cards from the deck of cards
-
-    cards_to_deal = 5 - len(community_cards)                                    #determines number of cards to finish dealing community cards
-    
-    while cards_to_deal != 0:                                                   #while loop to deal cards while community cards is less than 5
-        community_cards.append(deck_of_cards.pop())                             #deals a random card to community cards
-        cards_to_deal = 5 - len(community_cards)                                #determines new number of cards needed to be dealt
-    
-    return community_cards                                                      #returns fully dealt community cards
 
 
 def rank_hand(five_card_hand):
@@ -84,7 +118,7 @@ def rank_hand(five_card_hand):
         rank = card[:-1]                                                        #stores the card rank
         card_number_list.append(rank)                                           #appends card rank to card rank list
         suit = card[-1]                                                         #stores the card suit
-        suit_list.append(suit)                                                  #appends card suit to card suit list
+        suit_list.append(suit)                                                  #appends card suit to suit list
 
     rank_counts = {}                                                            #empty dictionary to store pairs
     for rank in card_number_list:                                               #iterates through list of cards in hand
@@ -221,7 +255,7 @@ def UCB1(wins, rounds, total_simulations, c):
     return exploitation + c * exploration                                       #returns UCB1 equation                                     
 
 
-def monte_carlo_search_tree(my_cards, community_cards, c=1.4, time_limit=10.0):
+def monte_carlo_search_tree(my_cards, community_cards, c=math.sqrt(2), time_limit=10.0):
 
     deck_of_cards = full_deck()                                                 #creates full deck of cards
     for card in my_cards + community_cards:                                     #iterates through my cards and community cards
@@ -236,17 +270,21 @@ def monte_carlo_search_tree(my_cards, community_cards, c=1.4, time_limit=10.0):
     total_rollouts = 0                                                          #sets number of rollouts to 0
     start = time.time()                                                         #sets timer
 
-    while time.time() - start < time_limit:                                     #while timer limit hasn't been reached
-        opponents_best_hand, best_score = None, -float('inf')                   #sets best_hand to None and best_score to negative infinity
+    while time.time() - start < time_limit:                                     #while time limit hasn't been reached
+        opponents_best_hand = None                                              #sets best_hand to None
+        best_score = -float('inf')                                              #sets best_score to negative infinity
         for hand, (wins, visits) in stats.items():                              #iterates through all possible opponent hands to find highest UCB1 score
             current_score = UCB1(wins, visits, total_rollouts, c)               #calculates scores with UCB1() function
             if current_score > best_score:                                      #if current score better, set best score to current score
                 best_score, opponents_best_hand = current_score, hand           #tuple unpacking
 
         deck_copy = deck_of_cards.copy()                                        #make copy of deck of cards
-        random.shuffle(deck_copy)                                               #shuffle deck copy
+        
         for card in opponents_best_hand:                                        #iterates through opponent's hand      
             deck_copy.remove(card)                                              #removes opponent's cards from deck copy
+
+        random.shuffle(deck_copy)                                               #shuffles the remaining unknown cards before dealing future community cards
+
         community_cards_copy = community_cards.copy()                           #makes copy of community cards
         for table_cards in range(5 - len(community_cards_copy)):                #determines remaining community cards to deal
             community_cards_copy.append(deck_copy.pop())                        #pops card from deck copy and appends to community cards copy
@@ -274,7 +312,98 @@ def monte_carlo_search_tree(my_cards, community_cards, c=1.4, time_limit=10.0):
 
     win_probability = total_wins / total_visits                                 #calculates win probability
     if win_probability >= 0.5:                                                  #if win_probability greater than 0.5, play out the hand
-        return "stay"  
+        decision = "stay"  
     else:                                                                       #if win_probability less than than 0.5, fold
-        return "fold"
+        decision = "fold"
+    return decision, win_probability, total_rollouts
+
+
+def print_current_odds(my_cards, community_cards, time_limit=3.0):
+
+    decision, win_probability, total_rollouts = monte_carlo_search_tree(         #runs the simulation using the known cards
+        my_cards=my_cards,                                                       #passes my current hand
+        community_cards=community_cards,                                         #passes the currently known community cards
+        time_limit=time_limit                                                    #passes the amount of time allowed for simulation
+    )
+
+    win_percentage = win_probability * 100                                       #converts the win probability into a percentage
+
+    if len(community_cards) == 3:                                                #checks if only the flop has been entered
+        street = "Flop"                                                          #stores the current poker street as flop
+    elif len(community_cards) == 4:                                              #checks if the turn has been entered
+        street = "Turn"                                                          #stores the current poker street as turn
+    elif len(community_cards) == 5:                                              #checks if the river has been entered
+        street = "River"                                                         #stores the current poker street as river
+    else:                                                                        #handles any unexpected number of community cards
+        street = "Current Hand"                                                  #stores a generic street name
+
+    print()                                                                      #prints a blank line for readability
+    print("=" * 50)                                                              #prints the top border of the results section
+    print(f"{street.upper()} ODDS UPDATE")                                       #prints the current street title
+    print("=" * 50)                                                              #prints the bottom border of the title section
+
+    print(f"My Hand:           {my_cards[0]}  {my_cards[1]}")                    #prints my two hole cards
+    print(f"Community Cards:   {'  '.join(community_cards)}")                    #prints the known community cards
+    print("-" * 50)                                                              #prints a separator line
+
+    print(f"Win Probability:   {win_percentage:.2f}%")                           #prints the estimated win probability as a percentage
+    print(f"Decimal Odds:      {win_probability:.4f}")                           #prints the estimated win probability as a decimal
+    print(f"Simulations Run:   {total_rollouts}")                                #prints the number of completed simulations
+    print(f"Suggested Move:    {decision.upper()}")                              #prints the suggested decision in uppercase
+
+    print("=" * 50)                                                              #prints the closing border of the results section
+    print()                                                                      #prints a blank line for readability
+
+
+def run_interactive_game():
+
+    used_cards = []                                                              #creates a list to track cards that have already been entered
+    my_cards = []                                                                #creates a list to store my two hole cards
+    community_cards = []                                                         #creates a list to store the community cards
+
+    print("Enter cards using format like AS, 10H, 7D, or QC.")                   #prints card input instructions
+    print("S = spades, C = clubs, H = hearts, D = diamonds")                     #prints suit input instructions
+    print()                                                                      #prints a blank line for readability
+
+    my_cards.append(get_unique_card_from_user("Enter your first card: ", used_cards))      #gets my first hole card
+    my_cards.append(get_unique_card_from_user("Enter your second card: ", used_cards))     #gets my second hole card
+
+    community_cards.append(get_unique_card_from_user("Enter flop card 1: ", used_cards))   #gets the first flop card
+    community_cards.append(get_unique_card_from_user("Enter flop card 2: ", used_cards))   #gets the second flop card
+    community_cards.append(get_unique_card_from_user("Enter flop card 3: ", used_cards))   #gets the third flop card
+
+    print_current_odds(my_cards, community_cards, time_limit=3.0)                #prints updated odds after the flop
+
+    turn_card = get_unique_card_from_user("Enter turn card: ", used_cards)       #gets the turn card
+    community_cards.append(turn_card)                                            #adds the turn card to the community cards
+
+    print_current_odds(my_cards, community_cards, time_limit=3.0)                #prints updated odds after the turn
+
+    river_card = get_unique_card_from_user("Enter river card: ", used_cards)     #gets the river card
+    community_cards.append(river_card)                                           #adds the river card to the community cards
+
+    print_current_odds(my_cards, community_cards, time_limit=3.0)                #prints updated odds after the river
+
+
+def test_run(seed=89):
+    random.seed(seed)
+
+    my_cards = deal_my_cards()
+    community_cards = deal_community_cards(my_cards)
+
+    decision, win_probability, total_rollouts = monte_carlo_search_tree(
+        my_cards=my_cards,
+        community_cards=community_cards,
+        time_limit=3.0
+    )
+
+    print("My cards:", my_cards)
+    print("Community cards:", community_cards)
+    print("Estimated win probability:", round(win_probability, 4))
+    print("Total rollouts:", total_rollouts)
+    print("Decision:", decision)
+
+
+if __name__ == "__main__":
+    run_interactive_game()
 
