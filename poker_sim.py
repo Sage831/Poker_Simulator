@@ -428,7 +428,7 @@ def run_interactive_game():
     community_cards.append(river_card)                                           #adds the river card to the community cards
 
     print_current_odds(my_cards, community_cards, player_count, time_limit=3.0)  #prints updated odds after the river
-    
+     
 
 if __name__ == "__main__":                                                       #checks if this script is being run directly
     run_interactive_game()                                                       #runs the interactive poker odds tool
