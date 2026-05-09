@@ -417,16 +417,16 @@ def run_interactive_game():
     community_cards.append(get_unique_card_from_user("Enter flop card 2: ", used_cards))    #gets the second flop card
     community_cards.append(get_unique_card_from_user("Enter flop card 3: ", used_cards))    #gets the third flop card
 
-    print_current_odds(my_cards, community_cards, player_count, time_limit=3.0)     #prints updated odds after the flop
+    print_current_odds(my_cards, community_cards, player_count, time_limit=3.0)             #prints updated odds after the flop
 
-    turn_card = get_unique_card_from_user("Enter turn card: ", used_cards)          #gets the turn card
-    community_cards.append(turn_card)                                               #adds the turn card to the community cards
+    turn_card = get_unique_card_from_user("Enter turn card: ", used_cards)                  #gets the turn card
+    community_cards.append(turn_card)                                                       #adds the turn card to the community cards
 
-    print_current_odds(my_cards, community_cards, player_count, time_limit=3.0)     #prints updated odds after the turn
-    river_card = get_unique_card_from_user("Enter river card: ", used_cards)        #gets the river card
-    community_cards.append(river_card)                                              #adds the river card to the community cards
+    print_current_odds(my_cards, community_cards, player_count, time_limit=3.0)             #prints updated odds after the turn
+    river_card = get_unique_card_from_user("Enter river card: ", used_cards)                #gets the river card
+    community_cards.append(river_card)                                                      #adds the river card to the community cards
 
-    print_current_odds(my_cards, community_cards, player_count, time_limit=3.0)     #prints updated odds after the river
+    print_current_odds(my_cards, community_cards, player_count, time_limit=3.0)             #prints updated odds after the river
  
 
 if __name__ == "__main__":                                                      #checks if this script is being run directly
