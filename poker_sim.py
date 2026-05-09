@@ -39,7 +39,7 @@ def normalize_card_input(card_input):
     if suit in suit_replacements:                                               #checks if the suit was entered as a letter
         suit = suit_replacements[suit]                                          #replaces the suit letter with the matching suit symbol
 
-    valid_ranks = ['2','3','4','5','6','7','8','9','10','J','Q','K','A']         #creates a list of valid card ranks
+    valid_ranks = ['2','3','4','5','6','7','8','9','10','J','Q','K','A']        #creates a list of valid card ranks
     valid_suits = ['\u2660','\u2663','\u2665','\u2666']                         #creates a list of valid card suits
 
     if rank not in valid_ranks:                                                 #checks if the rank is invalid
@@ -56,11 +56,11 @@ def get_card_from_user(prompt):
     card = None                                                                 #creates a variable to store the validated card
 
     while card is None:                                                         #loops until the user enters a valid card
-        card_input = input(prompt)                                               #gets the raw card input from the user
-        card = normalize_card_input(card_input)                                  #normalizes and validates the card input
+        card_input = input(prompt)                                              #gets the raw card input from the user
+        card = normalize_card_input(card_input)                                 #normalizes and validates the card input
 
         if card is None:                                                        #checks if the user entered an invalid card
-            print("Invalid card. Use format like AS, 10H, 7D, or QC.")           #prints an explanation of the expected card format
+            print("Invalid card. Use format like AS, 10H, 7D, or QC.")          #prints an explanation of the expected card format
 
     return card                                                                 #returns the valid normalized card
 
@@ -70,7 +70,7 @@ def get_unique_card_from_user(prompt, used_cards):
     card = get_card_from_user(prompt)                                           #gets a valid card from the user
 
     while card in used_cards:                                                   #checks if the card was already entered
-        print("That card has already been used. Enter a different card.")        #prints a duplicate-card warning
+        print("That card has already been used. Enter a different card.")       #prints a duplicate-card warning
         card = get_card_from_user(prompt)                                       #asks the user for another valid card
 
     used_cards.append(card)                                                     #adds the card to the used-cards list
@@ -81,21 +81,21 @@ def get_player_count_from_user():
 
     player_count = None                                                         #creates a variable to store the validated player count
 
-    while player_count is None:                                                  #loops until the user enters a valid player count
+    while player_count is None:                                                 #loops until the user enters a valid player count
 
-        player_count_raw = input("Enter total number of players including you: ") #gets the raw player count input from the user
-        player_count_raw = player_count_raw.strip()                             #removes leading and trailing whitespace from the input
+        player_count_raw = input("Enter total number of players including you: ")   #gets the raw player count input from the user
+        player_count_raw = player_count_raw.strip()                                 #removes leading and trailing whitespace from the input
 
         try:                                                                    #attempts to convert the input into an integer
             player_count = int(player_count_raw)                                #converts the raw input into an integer
 
         except ValueError:                                                      #runs if the input cannot be converted into an integer
-            print("Invalid number. Enter a whole number from 2 to 10.")          #prints an invalid-number warning
+            print("Invalid number. Enter a whole number from 2 to 10.")         #prints an invalid-number warning
             player_count = None                                                 #resets player_count so the loop continues
             continue                                                            #returns to the top of the loop
 
         if player_count < 2 or player_count > 10:                               #checks if the player count is outside normal poker table limits
-            print("Invalid player count. Enter a number from 2 to 10.")          #prints an invalid-player-count warning
+            print("Invalid player count. Enter a number from 2 to 10.")         #prints an invalid-player-count warning
             player_count = None                                                 #resets player_count so the loop continues
 
     return player_count                                                         #returns the valid total player count
@@ -115,8 +115,8 @@ def deal_community_cards(my_cards):
     for card in my_cards:                                                       #iterates through my cards
         deck_of_cards.remove(card)                                              #removes cards in my hand from the deck of cards
 
-    community_cards = [deck_of_cards.pop(), deck_of_cards.pop(), deck_of_cards.pop()] #pops three cards from deck for community cards
-    return community_cards                                                      #returns the community cards
+    community_cards = [deck_of_cards.pop(), deck_of_cards.pop(), deck_of_cards.pop()]   #pops three cards from deck for community cards
+    return community_cards                                                              #returns the community cards
 
 
 def deal_opponents_cards(my_cards, community_cards):
@@ -279,8 +279,8 @@ def rank_hand(five_card_hand):
     for rank in unique_ranks:                                                   #iterates through unique_ranks
         high_cards.append(card_rank[rank])                                      #appends card value to high_cards list
 
-    high_cards.sort(reverse=True)                                               #sorts high_cards list from highest to lowest
-    return (0, high_cards[0], high_cards[1], high_cards[2], high_cards[3], high_cards[4]) #returns hand value as 0 and the list of high cards
+    high_cards.sort(reverse=True)                                                           #sorts high_cards list from highest to lowest
+    return (0, high_cards[0], high_cards[1], high_cards[2], high_cards[3], high_cards[4])   #returns hand value as 0 and the list of high cards
     
 
 def evaluate_best_hand(seven_cards):
@@ -329,9 +329,9 @@ def monte_carlo_search_tree(my_cards, community_cards, player_count, time_limit=
 
         opponents_best_hands = []                                               #creates a list to store each opponent's best hand
 
-        for opponent_hand in opponents_cards:                                   #loops through each opponent hand
-            opponent_best_hand = evaluate_best_hand(opponent_hand + community_cards_copy) #determines the opponent's best possible hand
-            opponents_best_hands.append(opponent_best_hand)                     #adds the opponent's best hand to the list
+        for opponent_hand in opponents_cards:                                               #loops through each opponent hand
+            opponent_best_hand = evaluate_best_hand(opponent_hand + community_cards_copy)   #determines the opponent's best possible hand
+            opponents_best_hands.append(opponent_best_hand)                                 #adds the opponent's best hand to the list
 
         best_opponent_hand = max(opponents_best_hands)                          #finds the strongest opponent hand at the table
 
@@ -357,78 +357,78 @@ def monte_carlo_search_tree(my_cards, community_cards, player_count, time_limit=
 
 def print_current_odds(my_cards, community_cards, player_count, time_limit=3.0):
 
-    decision, win_probability, total_rollouts = monte_carlo_search_tree(         #runs the simulation using the known cards and player count
-        my_cards=my_cards,                                                       #passes my current hand
-        community_cards=community_cards,                                         #passes the currently known community cards
-        player_count=player_count,                                               #passes the total number of players at the table
-        time_limit=time_limit                                                    #passes the amount of time allowed for simulation
+    decision, win_probability, total_rollouts = monte_carlo_search_tree(        #runs the simulation using the known cards and player count
+        my_cards=my_cards,                                                      #passes my current hand
+        community_cards=community_cards,                                        #passes the currently known community cards
+        player_count=player_count,                                              #passes the total number of players at the table
+        time_limit=time_limit                                                   #passes the amount of time allowed for simulation
     )
 
-    win_percentage = win_probability * 100                                       #converts the win probability into a percentage
-    number_of_opponents = player_count - 1                                       #calculates how many opponents are at the table
+    win_percentage = win_probability * 100                                      #converts the win probability into a percentage
+    number_of_opponents = player_count - 1                                      #calculates how many opponents are at the table
 
-    if len(community_cards) == 3:                                                #checks if only the flop has been entered
-        street = "Flop"                                                          #stores the current poker street as flop
-    elif len(community_cards) == 4:                                              #checks if the turn has been entered
-        street = "Turn"                                                          #stores the current poker street as turn
-    elif len(community_cards) == 5:                                              #checks if the river has been entered
-        street = "River"                                                         #stores the current poker street as river
+    if len(community_cards) == 3:                                               #checks if only the flop has been entered
+        street = "Flop"                                                         #stores the current poker street as flop
+    elif len(community_cards) == 4:                                             #checks if the turn has been entered
+        street = "Turn"                                                         #stores the current poker street as turn
+    elif len(community_cards) == 5:                                             #checks if the river has been entered
+        street = "River"                                                        #stores the current poker street as river
     else:                                                                       #handles any unexpected number of community cards
-        street = "Current Hand"                                                  #stores a generic street name
+        street = "Current Hand"                                                 #stores a generic street name
 
-    print()                                                                      #prints a blank line for readability
-    print("=" * 56)                                                              #prints the top border of the results section
-    print(f"{street.upper()} ODDS UPDATE")                                       #prints the current street title
-    print("=" * 56)                                                              #prints the bottom border of the title section
+    print()                                                                     #prints a blank line for readability
+    print("=" * 56)                                                             #prints the top border of the results section
+    print(f"{street.upper()} ODDS UPDATE")                                      #prints the current street title
+    print("=" * 56)                                                             #prints the bottom border of the title section
 
-    print(f"Players at Table:      {player_count}")                              #prints the total number of players at the table
-    print(f"Opponents Remaining:   {number_of_opponents}")                       #prints the number of opponents being simulated against
-    print(f"My Hand:               {my_cards[0]}  {my_cards[1]}")                #prints my two hole cards
-    print(f"Community Cards:       {'  '.join(community_cards)}")                #prints the known community cards
-    print("-" * 56)                                                              #prints a separator line
+    print(f"Players at Table:      {player_count}")                             #prints the total number of players at the table
+    print(f"Opponents Remaining:   {number_of_opponents}")                      #prints the number of opponents being simulated against
+    print(f"My Hand:               {my_cards[0]}  {my_cards[1]}")               #prints my two hole cards
+    print(f"Community Cards:       {'  '.join(community_cards)}")               #prints the known community cards
+    print("-" * 56)                                                             #prints a separator line
 
-    print(f"Win Probability:       {win_percentage:.2f}%")                       #prints the estimated win probability as a percentage
-    print(f"Decimal Probability:   {win_probability:.4f}")                       #prints the estimated win probability as a decimal
-    print(f"Simulations Run:       {total_rollouts}")                            #prints the number of completed simulations
-    print(f"Suggested Move:        {decision.upper()}")                          #prints the suggested decision in uppercase
+    print(f"Win Probability:       {win_percentage:.2f}%")                      #prints the estimated win probability as a percentage
+    print(f"Decimal Probability:   {win_probability:.4f}")                      #prints the estimated win probability as a decimal
+    print(f"Simulations Run:       {total_rollouts}")                           #prints the number of completed simulations
+    print(f"Suggested Move:        {decision.upper()}")                         #prints the suggested decision in uppercase
 
-    print("=" * 56)                                                              #prints the closing border of the results section
-    print()                                                                      #prints a blank line for readability
+    print("=" * 56)                                                             #prints the closing border of the results section
+    print()                                                                     #prints a blank line for readability
 
 
 def run_interactive_game():
 
-    used_cards = []                                                              #creates a list to track cards that have already been entered
-    my_cards = []                                                                #creates a list to store my two hole cards
-    community_cards = []                                                         #creates a list to store the community cards
+    used_cards = []                                                             #creates a list to track cards that have already been entered
+    my_cards = []                                                               #creates a list to store my two hole cards
+    community_cards = []                                                        #creates a list to store the community cards
 
-    print("Enter cards using format like AS, 10H, 7D, or QC.")                   #prints card input instructions
-    print("S = spades, C = clubs, H = hearts, D = diamonds")                     #prints suit input instructions
-    print()                                                                      #prints a blank line for readability
+    print("Enter cards using format like AS, 10H, 7D, or QC.")                  #prints card input instructions
+    print("S = spades, C = clubs, H = hearts, D = diamonds")                    #prints suit input instructions
+    print()                                                                     #prints a blank line for readability
 
-    player_count = get_player_count_from_user()                                  #gets the total number of players at the table including me
+    player_count = get_player_count_from_user()                                 #gets the total number of players at the table including me
 
-    print()                                                                      #prints a blank line for readability
+    print()                                                                     #prints a blank line for readability
 
-    my_cards.append(get_unique_card_from_user("Enter your first card: ", used_cards)) #gets my first hole card
-    my_cards.append(get_unique_card_from_user("Enter your second card: ", used_cards)) #gets my second hole card
+    my_cards.append(get_unique_card_from_user("Enter your first card: ", used_cards))       #gets my first hole card
+    my_cards.append(get_unique_card_from_user("Enter your second card: ", used_cards))      #gets my second hole card
 
-    community_cards.append(get_unique_card_from_user("Enter flop card 1: ", used_cards)) #gets the first flop card
-    community_cards.append(get_unique_card_from_user("Enter flop card 2: ", used_cards)) #gets the second flop card
-    community_cards.append(get_unique_card_from_user("Enter flop card 3: ", used_cards)) #gets the third flop card
+    community_cards.append(get_unique_card_from_user("Enter flop card 1: ", used_cards))    #gets the first flop card
+    community_cards.append(get_unique_card_from_user("Enter flop card 2: ", used_cards))    #gets the second flop card
+    community_cards.append(get_unique_card_from_user("Enter flop card 3: ", used_cards))    #gets the third flop card
 
-    print_current_odds(my_cards, community_cards, player_count, time_limit=3.0)  #prints updated odds after the flop
+    print_current_odds(my_cards, community_cards, player_count, time_limit=3.0)     #prints updated odds after the flop
 
-    turn_card = get_unique_card_from_user("Enter turn card: ", used_cards)       #gets the turn card
-    community_cards.append(turn_card)                                            #adds the turn card to the community cards
+    turn_card = get_unique_card_from_user("Enter turn card: ", used_cards)          #gets the turn card
+    community_cards.append(turn_card)                                               #adds the turn card to the community cards
 
-    print_current_odds(my_cards, community_cards, player_count, time_limit=3.0)  #prints updated odds after the turn
-    river_card = get_unique_card_from_user("Enter river card: ", used_cards)     #gets the river card
-    community_cards.append(river_card)                                           #adds the river card to the community cards
+    print_current_odds(my_cards, community_cards, player_count, time_limit=3.0)     #prints updated odds after the turn
+    river_card = get_unique_card_from_user("Enter river card: ", used_cards)        #gets the river card
+    community_cards.append(river_card)                                              #adds the river card to the community cards
 
-    print_current_odds(my_cards, community_cards, player_count, time_limit=3.0)  #prints updated odds after the river
+    print_current_odds(my_cards, community_cards, player_count, time_limit=3.0)     #prints updated odds after the river
  
 
-if __name__ == "__main__":                                                       #checks if this script is being run directly
-    run_interactive_game()                                                       #runs the interactive poker odds tool
+if __name__ == "__main__":                                                      #checks if this script is being run directly
+    run_interactive_game()                                                      #runs the interactive poker odds tool
 
