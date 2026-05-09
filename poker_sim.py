@@ -1,6 +1,5 @@
 import random                                                                   #simulate shuffling deck and hands
 import time                                                                     #enforce time limit
-import math                                                                     #for mathematical operations
 import itertools                                                                #create card combinations
 
 
